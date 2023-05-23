@@ -1,4 +1,5 @@
 import random
+import math
 
 
 # HL component 1 - Get (and check) user input
@@ -92,21 +93,25 @@ def yes_no(question):
 
 # main routine
 played_before = yes_no("Have you played this game before?")
+GUESSES_ALLOWED = 5
+already_guessed = []
+guesses_left = GUESSES_ALLOWED
+num_won = 0
+rounds_played = 0
 
 if played_before == "no":
     instructions()
 
-rounds_played = 0
 rounds = check_rounds()
 if rounds == "":
     mode = "infinite"
     rounds = 5
+else:
+    mode=""
 
 end_game = "no"
 while end_game == "no":
 
-    lowest = int_check("Low number: ")
-    highest = int_check("High number: ", lowest + 1)
     print()
     if mode == "infinite":
         heading = f"Continuous Mode: Round {rounds_played + 1}"
@@ -116,6 +121,49 @@ while end_game == "no":
         heading = f"Round {rounds_played + 1} of {rounds}"
         print(heading)
     user_choice = int_check("")
+
+    lowest = int_check("Low number: ")
+    highest = int_check("High number: ", lowest + 1)
+
+    range = highest - lowest + 1
+    max_raw = math.log2(range)
+    max_upped = math.ceil(max_raw)
+    max_guesses = max_upped + 1
+    print(F"Max Guesses: {max_guesses}")
+
+    SECRET = random.randint(lowest, highest)
+
+    guess = ""
+    while guess != SECRET and guesses_left >= 1:
+
+        guess = int(input("Guess: "))
+
+        if guess in already_guessed:
+            print("You already guessed that number!  Please try a different number")
+            print(f"You still have {guesses_left} guesses left")
+
+            continue
+
+        guesses_left -= 1
+        already_guessed.append(guess)
+
+        if guesses_left >= 1:
+
+            if guess < SECRET:
+                print(f"Too low, try a higher number. Guesses left: {guesses_left}")
+
+            elif guess > SECRET:
+                print(f"Too high, try a lower number. Guesses left: {guesses_left}")
+
+        else:
+            if guess < SECRET:
+                print("Too low")
+            elif guess < SECRET:
+                print("Too high")
+
+    if guess == SECRET:
+        if guesses_left == GUESSES_ALLOWED:
+            print("Congratulations, you got the secret number")
 
     if rounds_played == rounds - 1:
         end_game = "yes"
