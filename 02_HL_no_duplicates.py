@@ -33,5 +33,5 @@ while guess != SECRET and guesses_left >= 1:
             print("Too high")
 
 if guess == SECRET:
-    if guesses_left == GUESSES_ALLOWED:
-        print("Congratulations, you got the secret number")
+
+    print("Congratulations, you got the secret number")
